@@ -10,28 +10,35 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.File;
 
-public class MainActivity extends AppCompatActivity {
+import me.zchang.abitractor.extractor.ABitractor;
+
+public class MainActivity extends AppCompatActivity implements ABitractor.ABitractorAsyncListener{
     public final static int REQUEST_SELECT_IMAGE = 0x1;
 
     private ImageView srcImage;
     private ImageView dstImage;
     private SeekBar sampleBar;
     private TextView sampleText;
+    private ProgressBar progressBar;
 
     private String selectImagePath;
     private Bitmap selectImage;
 
     private int sampleTime = 8;
+
+    private ABitractor aBitractor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +49,20 @@ public class MainActivity extends AppCompatActivity {
         dstImage = (ImageView) findViewById(R.id.iv_des);
         sampleBar = (SeekBar) findViewById(R.id.sb_sample);
         sampleText = (TextView) findViewById(R.id.tv_sample);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         sampleBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 sampleTime = (int) Math.pow(2, progress + 1);
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = sampleTime;
-                selectImage = BitmapFactory.decodeFile(selectImagePath, options);
-                dstImage.setImageBitmap(selectImage);
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inSampleSize = sampleTime;
+//                selectImage = BitmapFactory.decodeFile(selectImagePath, options);
+//                dstImage.setImageBitmap(selectImage);
+
+                if(aBitractor != null) {
+                    aBitractor.generate(MainActivity.this, sampleTime);
+                    progressBar.setVisibility(View.VISIBLE);
+                }
 
                 sampleText.setText(((int) Math.pow(2, progress + 1)) + "");
             }
@@ -102,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        progressBar.setVisibility(View.VISIBLE);
         if(requestCode == MainActivity.REQUEST_SELECT_IMAGE && resultCode == RESULT_OK) {
             Uri selectImageUri = data.getData();
             Cursor cursor = getContentResolver().query(selectImageUri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
@@ -110,16 +124,26 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
 
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = sampleTime;
+//            options.inSampleSize = sampleTime;
             selectImage = BitmapFactory.decodeFile(selectImagePath, options);
+            aBitractor = new ABitractor(selectImage);
+            aBitractor.generate(this, sampleTime);
+
+
 
             srcImage.setImageURI(Uri.fromFile(new File(selectImagePath)));
-            dstImage.setImageBitmap(selectImage);
+            //dstImage.setImageBitmap(selectImage);
             //srcImage.setBackground(null);
 //            ViewGroup.LayoutParams params = dstImage.getLayoutParams();
 //            params.width = dstImage.getWidth() / 8;
 //            params.height = dstImage.getHeight() / 8;
 //            dstImage.setLayoutParams(params);
         }
+    }
+
+    @Override
+    public void onGeneated(Bitmap bitmap, float degree) {
+        progressBar.setVisibility(View.INVISIBLE);
+        dstImage.setImageBitmap(bitmap);
     }
 }

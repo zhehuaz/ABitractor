@@ -17,8 +17,7 @@
         android:id="@+id/iv_des"
         android:layout_below="@id/iv_src"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-/>
+        android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="match_parent"
@@ -33,8 +32,15 @@
         android:id="@+id/sb_sample"
         android:layout_alignParentBottom="true"
         android:max="7"
-        android:progress="3"
-/>
+        android:progress="3" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_below="@+id/iv_des"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"/>
 
 
 </RelativeLayout>
