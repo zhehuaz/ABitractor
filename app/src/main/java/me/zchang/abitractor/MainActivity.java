@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -29,14 +30,17 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
 
     private ImageView srcImage;
     private ImageView dstImage;
+    private ImageView libImage;
     private SeekBar sampleBar;
     private TextView sampleText;
     private ProgressBar progressBar;
+    private Button extractButton;
 
     private String selectImagePath;
     private Bitmap selectImage;
+    private Bitmap sampledImage;
 
-    private int sampleTime = 8;
+    private int sampleTime = 16;
 
     private ABitractor aBitractor;
 
@@ -47,24 +51,18 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
 
         srcImage = (ImageView) findViewById(R.id.iv_src);
         dstImage = (ImageView) findViewById(R.id.iv_des);
+        libImage = (ImageView) findViewById(R.id.iv_lib);
         sampleBar = (SeekBar) findViewById(R.id.sb_sample);
         sampleText = (TextView) findViewById(R.id.tv_sample);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        extractButton = (Button) findViewById(R.id.bt_extract);
         sampleBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                sampleTime = (int) Math.pow(2, progress + 1);
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inSampleSize = sampleTime;
-//                selectImage = BitmapFactory.decodeFile(selectImagePath, options);
-//                dstImage.setImageBitmap(selectImage);
+                //sampleTime = (int) Math.pow(2, progress + 1);
+                sampleTime = progress + 1;
 
-                if(aBitractor != null) {
-                    aBitractor.generate(MainActivity.this, sampleTime);
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-
-                sampleText.setText(((int) Math.pow(2, progress + 1)) + "");
+                sampleText.setText(sampleTime + "");
             }
 
             @Override
@@ -85,6 +83,20 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, MainActivity.REQUEST_SELECT_IMAGE);
+            }
+        });
+
+        extractButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(aBitractor != null) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    aBitractor.generate(MainActivity.this, sampleTime);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = sampleTime;
+                    sampledImage = BitmapFactory.decodeFile(selectImagePath, options);
+                    libImage.setImageBitmap(sampledImage);
+                }
             }
         });
     }
@@ -115,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        progressBar.setVisibility(View.VISIBLE);
         if(requestCode == MainActivity.REQUEST_SELECT_IMAGE && resultCode == RESULT_OK) {
             Uri selectImageUri = data.getData();
             Cursor cursor = getContentResolver().query(selectImageUri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
@@ -123,11 +134,12 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
             selectImagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
             cursor.close();
 
-            BitmapFactory.Options options = new BitmapFactory.Options();
-//            options.inSampleSize = sampleTime;
-            selectImage = BitmapFactory.decodeFile(selectImagePath, options);
+            // origin image
+            selectImage = BitmapFactory.decodeFile(selectImagePath);
+
             aBitractor = new ABitractor(selectImage);
-            aBitractor.generate(this, sampleTime);
+            //aBitractor.generate(this, sampleTime);
+
 
 
 
@@ -145,5 +157,9 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     public void onGeneated(Bitmap bitmap, float degree) {
         progressBar.setVisibility(View.INVISIBLE);
         dstImage.setImageBitmap(bitmap);
+        //                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inSampleSize = sampleTime;
+//                selectImage = BitmapFactory.decodeFile(selectImagePath, options);
+//                dstImage.setImageBitmap(selectImage);
     }
 }

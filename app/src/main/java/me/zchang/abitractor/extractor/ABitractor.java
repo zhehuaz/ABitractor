@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -66,9 +67,10 @@ public class ABitractor {
 
             @Override
             protected Bitmap doInBackground(Bitmap... params) {
+                Bitmap srcBitmap = params[0];
                 int []generated = new int[tarHeight * tarWidth];
                 //Bitmap generatedBitmap = Bitmap.createBitmap(tarWidth, tarHeight, Bitmap.Config.ARGB_8888);
-                TreeMap<Integer, Integer> colors = new TreeMap<>();
+                HashMap<Integer, Integer> colors = new HashMap<>();
                 List<Map.Entry<Integer, Integer>> temp;
 
                 int startX, startY;
@@ -87,7 +89,7 @@ public class ABitractor {
                         for (int k = startY; k < startY + sampleLevel && k < bitmapHeight; k++) {
                             // for one column in a block
                             for (int l = startX; l < startX + sampleLevel && l < bitmapWidth; l++) {
-                                curColor = bitmap.getPixel(l, k);
+                                curColor = srcBitmap.getPixel(l, k);
                                 if (colors.containsKey(curColor))
                                     colors.put(curColor, colors.get(curColor) + 1);
                                 else
@@ -102,10 +104,11 @@ public class ABitractor {
                             }
                         });
                         //generatedBitmap.setPixel(j, i, temp.get(0).getValue());
-                        generated[j * tarWidth + i] = temp.get(0).getKey();
+                        //generated[j * tarWidth + i] = temp.get(0).getKey();
+                        generated[i * tarWidth + j] = temp.get(0).getKey();
                     }
                 }
-                return Bitmap.createBitmap(generated, tarWidth, tarHeight, bitmap.getConfig());
+                return Bitmap.createBitmap(generated, tarWidth, tarHeight, srcBitmap.getConfig());
             }
 
             @Override

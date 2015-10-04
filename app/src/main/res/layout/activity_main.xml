@@ -15,24 +15,39 @@
 
     <ImageView
         android:id="@+id/iv_des"
-        android:layout_below="@id/iv_src"
+        android:layout_below="@+id/iv_src"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_lib"
+        android:layout_below="@+id/iv_des"/>
+
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="55sp"
         android:id="@+id/tv_sample"
-        android:text="8"
+        android:text="16"
         android:layout_above="@+id/sb_sample"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_sample"
+        android:layout_alignRight="@+id/sb_sample"
+        android:layout_alignEnd="@+id/sb_sample"
+        android:text="Extract"
+        android:id="@+id/bt_extract"/>
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sb_sample"
         android:layout_alignParentBottom="true"
-        android:max="7"
-        android:progress="3" />
+        android:max="127"
+        android:progress="15" />
 
     <ProgressBar
         android:layout_width="wrap_content"
