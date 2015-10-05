@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import java.util.Map;
+
 /**
  * Created by Administrator on 2015/10/2.
  */
@@ -77,10 +79,15 @@ public class ABitractor {
             @Override
             protected Integer doInBackground(Bitmap... params) {
                 if(sampler == null) {
-                    sampler = new Sampler() {
+                    sampler = new Sampler() { // by default
                         @Override
                         public int calSampleLevel(Bitmap bitmap) {
                             return 1;
+                        }
+
+                        @Override
+                        public Map<Integer, Integer> getWidthD() {
+                            return null;
                         }
                     };
                 }
@@ -89,7 +96,7 @@ public class ABitractor {
 
             @Override
             protected void onPostExecute(Integer integer) {
-                listener.onSampled(integer);
+                listener.onSampled(integer, sampler.getWidthD());
             }
         }.execute(bitmap);
     }
@@ -109,8 +116,9 @@ public class ABitractor {
         /**
          * Callback when recommended sample level is calculated over.
          * @param sampleLevel The recommended sample level.
+         * @param widthD The width distribution, key as width and value as frequency.
          */
-        void onSampled(int sampleLevel);
+        void onSampled(int sampleLevel, final Map<Integer, Integer> widthD);
 
         /**
          * Callback when the sampled bitmap is generated.
@@ -126,5 +134,6 @@ public class ABitractor {
 
     interface Sampler {
         int calSampleLevel(Bitmap bitmap);
+        Map<Integer, Integer> getWidthD();
     }
 }

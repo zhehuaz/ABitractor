@@ -25,6 +25,12 @@
         android:id="@+id/iv_lib"
         android:layout_below="@+id/iv_des"/>
 
+    <me.zchang.abitractor.ui.Chart
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_lib"
+        android:id="@+id/ct_statics"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

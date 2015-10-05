@@ -18,9 +18,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import me.zchang.abitractor.algorithm.ABitractor;
 import me.zchang.abitractor.algorithm.GridExtractorMajority;
+import me.zchang.abitractor.algorithm.WidthSearchSampler;
+import me.zchang.abitractor.ui.Chart;
 
 public class MainActivity extends AppCompatActivity implements ABitractor.ABitractorAsyncListener{
     public final static int REQUEST_SELECT_IMAGE = 0x1;
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     private TextView sampleText;
     private ProgressBar progressBar;
     private Button extractButton;
+    private Chart chart;
 
     private String selectImagePath;
     private Bitmap selectImage;
@@ -54,12 +59,12 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
         sampleText = (TextView) findViewById(R.id.tv_sample);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         extractButton = (Button) findViewById(R.id.bt_extract);
+        chart = (Chart) findViewById(R.id.ct_statics);
         sampleBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //sampleTime = (int) Math.pow(2, progress + 1);
                 sampleTime = progress + 1;
-
                 sampleText.setText(sampleTime + "");
             }
 
@@ -87,9 +92,10 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
         extractButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(aBitractor != null) {
+                if (aBitractor != null) {
                     progressBar.setVisibility(View.VISIBLE);
                     aBitractor.generate(MainActivity.this, sampleTime);
+                    aBitractor.sample(MainActivity.this);
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = sampleTime;
                     sampledImage = BitmapFactory.decodeFile(selectImagePath, options);
@@ -97,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
                 }
             }
         });
+
     }
 
     @Override
@@ -136,13 +143,16 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
             selectImage = BitmapFactory.decodeFile(selectImagePath);
             aBitractor = new ABitractor(selectImage);
             aBitractor.setExtractor(new GridExtractorMajority());
+            aBitractor.setSampler(new WidthSearchSampler());
             srcImage.setImageURI(Uri.fromFile(new File(selectImagePath)));
         }
     }
 
-    @Override
-    public void onSampled(int sampleLevel) {
 
+    @Override
+    public void onSampled(int sampleLevel, Map<Integer, Integer> widthD) {
+        if(widthD != null)
+            chart.setData(widthD);
     }
 
     @Override
