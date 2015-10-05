@@ -1,20 +1,16 @@
 package me.zchang.abitractor;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.graphics.Palette;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,6 +20,7 @@ import android.widget.TextView;
 import java.io.File;
 
 import me.zchang.abitractor.extractor.ABitractor;
+import me.zchang.abitractor.extractor.GridExtractorMajority;
 
 public class MainActivity extends AppCompatActivity implements ABitractor.ABitractorAsyncListener{
     public final static int REQUEST_SELECT_IMAGE = 0x1;
@@ -136,25 +133,14 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
 
             // origin image
             selectImage = BitmapFactory.decodeFile(selectImagePath);
-
             aBitractor = new ABitractor(selectImage);
-            //aBitractor.generate(this, sampleTime);
-
-
-
-
+            aBitractor.setExtractor(new GridExtractorMajority());
             srcImage.setImageURI(Uri.fromFile(new File(selectImagePath)));
-            //dstImage.setImageBitmap(selectImage);
-            //srcImage.setBackground(null);
-//            ViewGroup.LayoutParams params = dstImage.getLayoutParams();
-//            params.width = dstImage.getWidth() / 8;
-//            params.height = dstImage.getHeight() / 8;
-//            dstImage.setLayoutParams(params);
         }
     }
 
     @Override
-    public void onGeneated(Bitmap bitmap, float degree) {
+    public void onGenerated(Bitmap bitmap, float degree) {
         progressBar.setVisibility(View.INVISIBLE);
         dstImage.setImageBitmap(bitmap);
         //                BitmapFactory.Options options = new BitmapFactory.Options();
