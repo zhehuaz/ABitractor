@@ -1,15 +1,8 @@
-package me.zchang.abitractor.extractor;
+package me.zchang.abitractor.algorithm;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2015/10/2.
@@ -24,6 +17,7 @@ public class ABitractor {
     //int tarHeight;
 
     private Extractor extractor;
+    private Sampler sampler;
 
     public ABitractor() { }
     public ABitractor(Bitmap bitmap) {
@@ -62,12 +56,12 @@ public class ABitractor {
         new AsyncTask<Bitmap, Integer, Bitmap>() {
             @Override
             protected Bitmap doInBackground(Bitmap... params) {
-                if(extractor != null)
-                    return Bitmap.createBitmap(extractor.extractFromBitmap(params[0], tarWidth, tarHeight, sampleLevel),
-                            tarWidth,
-                            tarHeight,
-                            params[0].getConfig());
-                return null;
+                if(extractor == null)
+                    extractor = new GridExtractorMajority();// default extractor
+                return Bitmap.createBitmap(extractor.extractFromBitmap(params[0], sampleLevel),
+                        tarWidth,
+                        tarHeight,
+                        params[0].getConfig());
             }
 
             @Override
@@ -77,15 +71,60 @@ public class ABitractor {
         }.execute(bitmap);
     }
 
+    public void sample(@NonNull final ABitractorAsyncListener listener) {
+        new AsyncTask<Bitmap, Integer, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Bitmap... params) {
+                if(sampler == null) {
+                    sampler = new Sampler() {
+                        @Override
+                        public int calSampleLevel(Bitmap bitmap) {
+                            return 1;
+                        }
+                    };
+                }
+                return sampler.calSampleLevel(params[0]);
+            }
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                listener.onSampled(integer);
+            }
+        }.execute(bitmap);
+    }
+
     public void setExtractor(Extractor extractor) {
         this.extractor = extractor;
     }
 
+    public void setSampler(Sampler sampler) {
+        this.sampler = sampler;
+    }
+
+    /**
+     *
+     */
     public interface ABitractorAsyncListener {
+        /**
+         * Callback when recommended sample level is calculated over.
+         * @param sampleLevel The recommended sample level.
+         */
+        void onSampled(int sampleLevel);
+
+        /**
+         * Callback when the sampled bitmap is generated.
+         * @param bitmap The bitmap generated.
+         * @param degree Similar degree. TODO always 0 at present
+         */
         void onGenerated(Bitmap bitmap, float degree);
     }
 
     interface Extractor {
-        int[] extractFromBitmap(Bitmap bitmap, int tarWidth, int tarHeight, int sampleLevel);
+        int[] extractFromBitmap(Bitmap bitmap, int sampleLevel);
+    }
+
+    interface Sampler {
+        int calSampleLevel(Bitmap bitmap);
     }
 }

@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import java.io.File;
 
-import me.zchang.abitractor.extractor.ABitractor;
-import me.zchang.abitractor.extractor.GridExtractorMajority;
+import me.zchang.abitractor.algorithm.ABitractor;
+import me.zchang.abitractor.algorithm.GridExtractorMajority;
 
 public class MainActivity extends AppCompatActivity implements ABitractor.ABitractorAsyncListener{
     public final static int REQUEST_SELECT_IMAGE = 0x1;
@@ -141,9 +141,15 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     }
 
     @Override
+    public void onSampled(int sampleLevel) {
+
+    }
+
+    @Override
     public void onGenerated(Bitmap bitmap, float degree) {
         progressBar.setVisibility(View.INVISIBLE);
-        dstImage.setImageBitmap(bitmap);
+        if(bitmap != null)
+            dstImage.setImageBitmap(bitmap);
         //                BitmapFactory.Options options = new BitmapFactory.Options();
 //                options.inSampleSize = sampleTime;
 //                selectImage = BitmapFactory.decodeFile(selectImagePath, options);

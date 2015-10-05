@@ -1,4 +1,4 @@
-package me.zchang.abitractor.extractor;
+package me.zchang.abitractor.algorithm;
 
 import android.graphics.Bitmap;
 
@@ -14,9 +14,11 @@ import java.util.Map;
  */
 public class GridExtractorMajority implements ABitractor.Extractor {
     @Override
-    public int[] extractFromBitmap(Bitmap srcBitmap, int tarWidth, int tarHeight, int sampleLevel) {
+    public int[] extractFromBitmap(Bitmap srcBitmap, int sampleLevel) {
         int bitmapHeight = srcBitmap.getHeight();
         int bitmapWidth = srcBitmap.getWidth();
+        int tarWidth = bitmapWidth / sampleLevel;
+        int tarHeight = bitmapHeight / sampleLevel;
 
         int []generated = new int[tarHeight * tarWidth];
         //Bitmap generatedBitmap = Bitmap.createBitmap(tarWidth, tarHeight, Bitmap.Config.ARGB_8888);
