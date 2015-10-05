@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     private Bitmap selectImage;
     private Bitmap sampledImage;
 
-    private int sampleTime = 16;
+    private int sampleTime;
 
     private ABitractor aBitractor;
 
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sampleTime = 16;
         srcImage = (ImageView) findViewById(R.id.iv_src);
         dstImage = (ImageView) findViewById(R.id.iv_des);
         libImage = (ImageView) findViewById(R.id.iv_lib);
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
             }
         });
 
-        sampleTime = (int)Math.pow(2, sampleBar.getProgress() + 1);
+        //sampleTime = (int)Math.pow(2, sampleBar.getProgress() + 1);
 
         srcImage.setOnClickListener(new View.OnClickListener() {
             @Override
