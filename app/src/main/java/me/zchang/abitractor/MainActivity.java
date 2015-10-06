@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
                     options.inSampleSize = sampleTime;
                     sampledImage = BitmapFactory.decodeFile(selectImagePath, options);
                     libImage.setImageBitmap(sampledImage);
+                    extractButton.setClickable(false);
                 }
             }
         });
@@ -158,8 +159,10 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     @Override
     public void onGenerated(Bitmap bitmap, float degree) {
         progressBar.setVisibility(View.INVISIBLE);
-        if(bitmap != null)
+        extractButton.setClickable(true);
+        if(bitmap != null) {
             dstImage.setImageBitmap(bitmap);
+        }
         //                BitmapFactory.Options options = new BitmapFactory.Options();
 //                options.inSampleSize = sampleTime;
 //                selectImage = BitmapFactory.decodeFile(selectImagePath, options);

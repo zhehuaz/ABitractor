@@ -8,8 +8,9 @@
     <ImageView
         android:id="@+id/iv_src"
         android:layout_width="match_parent"
-        android:minHeight="100dp"
+        android:minHeight="50dp"
         android:layout_height="wrap_content"
+        android:maxHeight="100dp"
         android:scaleType="fitCenter"
         android:background="#FF0000"/>
 
@@ -34,26 +35,30 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="55sp"
+        android:textSize="35sp"
         android:id="@+id/tv_sample"
         android:text="16"
-        android:layout_above="@+id/sb_sample"/>
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/iv_des"
+        android:layout_toEndOf="@+id/iv_des" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tv_sample"
-        android:layout_alignRight="@+id/sb_sample"
-        android:layout_alignEnd="@+id/sb_sample"
+        android:layout_height="32dp"
+        android:textSize="10sp"
         android:text="Extract"
-        android:id="@+id/bt_extract"/>
+        android:id="@+id/bt_extract"
+        android:layout_alignTop="@+id/ct_statics"
+        android:layout_alignRight="@+id/ct_statics"
+        android:layout_alignEnd="@+id/ct_statics" />
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sb_sample"
-        android:layout_alignParentBottom="true"
         android:max="127"
-        android:progress="15" />
+        android:progress="15"
+        android:layout_alignBottom="@+id/ct_statics"
+        />
 
     <ProgressBar
         android:layout_width="wrap_content"

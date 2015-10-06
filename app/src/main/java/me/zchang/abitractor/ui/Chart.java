@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class Chart extends View {
 
-    private Paint paint;
+    private Paint paint = new Paint();
 
     private Map<Integer, Integer> dots;
     public Chart(Context context) {
@@ -34,7 +34,7 @@ public class Chart extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        paint = new Paint();
+        //paint = new Paint();
         paint.setStrokeWidth(2.f);
        // paint.setColor(Color.RED);
         if(dots == null)
@@ -42,9 +42,9 @@ public class Chart extends View {
         for(Map.Entry<Integer, Integer> e : dots.entrySet()) {
             if(e.getKey() <= 500 && e.getKey() >= 0) {
                 canvas.drawLine(e.getKey() * 2,
-                        300.f,
+                        1000.f,
                         e.getKey() * 2,
-                        300 - e.getValue() * 0.1f < 0 ? 0 : 300 - e.getValue() *.1f,
+                        1000 - e.getValue() * 0.1f < 0 ? 0 : 1000 - e.getValue() *.03f,
                         paint);
             }
         }
