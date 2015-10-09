@@ -39,11 +39,11 @@ public class ABitractor {
     public void generate(@NonNull final ABitractorAsyncListener listener, final int sampleLevel) {
         //this.sampleLevel = (int)(Math.pow(2.0, (int)(Math.log(sampleLevel) / Math.log(2.d))));
         if (sampleLevel == 1) {
-            listener.onGenerated(bitmap, 1.f);
+            listener.onGenerated(bitmap, null, 1.f);
             return;
         }
         if (sampleLevel <= 1 || bitmap == null) {
-            listener.onGenerated(null, -1);
+            listener.onGenerated(null, null, -1);
             return;
         }
 
@@ -51,7 +51,7 @@ public class ABitractor {
         final int tarHeight = bitmapHeight / sampleLevel;
 
         if (tarHeight <= 0 || tarWidth <= 0) {
-            listener.onGenerated(null, -1);
+            listener.onGenerated(null, null, -1);
             return;
         }
 
@@ -68,7 +68,7 @@ public class ABitractor {
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
-                listener.onGenerated(bitmap, 0);
+                listener.onGenerated(bitmap, extractor.getGridMarkedBmp(), 0);
             }
         }.execute(bitmap);
     }
@@ -123,17 +123,20 @@ public class ABitractor {
         /**
          * Callback when the sampled bitmap is generated.
          * @param bitmap The bitmap generated.
+         * @param GridMarkedBmp
          * @param degree Similar degree. TODO always 0 at present
          */
-        void onGenerated(Bitmap bitmap, float degree);
+        void onGenerated(Bitmap bitmap, Bitmap GridMarkedBmp, float degree);
     }
 
     interface Extractor {
         int[] extractFromBitmap(Bitmap bitmap, int sampleLevel);
+        Bitmap getGridMarkedBmp();
     }
 
     interface Sampler {
         int calSampleLevel(Bitmap bitmap);
         Map<Integer, Integer> getWidthD();
     }
+
 }

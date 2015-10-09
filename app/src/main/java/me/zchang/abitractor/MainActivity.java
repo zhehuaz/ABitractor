@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import me.zchang.abitractor.algorithm.ABitractor;
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     private ImageView srcImage;
     private ImageView dstImage;
     private ImageView libImage;
+    private ImageView markedImage;
     private SeekBar sampleBar;
     private TextView sampleText;
     private ProgressBar progressBar;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
         srcImage = (ImageView) findViewById(R.id.iv_src);
         dstImage = (ImageView) findViewById(R.id.iv_des);
         libImage = (ImageView) findViewById(R.id.iv_lib);
+        markedImage = (ImageView) findViewById(R.id.iv_mark);
         sampleBar = (SeekBar) findViewById(R.id.sb_sample);
         sampleText = (TextView) findViewById(R.id.tv_sample);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -157,12 +159,14 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     }
 
     @Override
-    public void onGenerated(Bitmap bitmap, float degree) {
+    public void onGenerated(Bitmap bitmap, Bitmap GridMarkedBmp, float degree) {
         progressBar.setVisibility(View.INVISIBLE);
         extractButton.setClickable(true);
         if(bitmap != null) {
             dstImage.setImageBitmap(bitmap);
         }
+
+        markedImage.setImageBitmap(GridMarkedBmp);
         //                BitmapFactory.Options options = new BitmapFactory.Options();
 //                options.inSampleSize = sampleTime;
 //                selectImage = BitmapFactory.decodeFile(selectImagePath, options);

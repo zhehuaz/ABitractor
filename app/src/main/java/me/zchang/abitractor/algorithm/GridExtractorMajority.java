@@ -13,6 +13,8 @@ import java.util.Map;
  * Created by Administrator on 2015/10/5.
  */
 public class GridExtractorMajority implements ABitractor.Extractor {
+    Bitmap gridMarkedBmp;
+
     @Override
     public int[] extractFromBitmap(Bitmap srcBitmap, int sampleLevel) {
         int bitmapHeight = srcBitmap.getHeight();
@@ -27,6 +29,8 @@ public class GridExtractorMajority implements ABitractor.Extractor {
 
         int startX, startY;
         int curColor;
+        gridMarkedBmp = srcBitmap.copy(srcBitmap.getConfig(), true);
+
         // for one row
         for (int i = 0; i < tarHeight; i++) {
             // for one column
@@ -36,6 +40,7 @@ public class GridExtractorMajority implements ABitractor.Extractor {
 
                 startX = sampleLevel * j;
                 startY = sampleLevel * i;
+                gridMarkedBmp.setPixel(startX, startY, 0x0);
 
                 // for one row in a block
                 for (int k = startY; k < startY + sampleLevel && k < bitmapHeight; k++) {
@@ -59,5 +64,10 @@ public class GridExtractorMajority implements ABitractor.Extractor {
             }
         }
         return generated;
+    }
+
+    @Override
+    public Bitmap getGridMarkedBmp() {
+        return gridMarkedBmp;
     }
 }

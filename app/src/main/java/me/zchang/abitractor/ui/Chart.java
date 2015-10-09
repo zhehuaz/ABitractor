@@ -46,6 +46,9 @@ public class Chart extends View {
                         e.getKey() * 2,
                         1000 - e.getValue() * 0.1f < 0 ? 0 : 1000 - e.getValue() *.03f,
                         paint);
+                paint.setTextSize(20.f);
+                canvas.drawText(e.getKey() + "", e.getKey() * 2, 1010, paint);
+                canvas.drawText(e.getValue() + "", e.getKey() * 2,1000 - e.getValue() * 0.1f < 0 ? 0 : 1000 - e.getValue() *.03f, paint);
             }
         }
     }

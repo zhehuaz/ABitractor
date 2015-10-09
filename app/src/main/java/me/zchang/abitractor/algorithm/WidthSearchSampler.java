@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by Administrator on 2015/10/5.
  */
 public class WidthSearchSampler implements ABitractor.Sampler {
-    Map<Integer, Integer> widthD;
+    Map<Integer, Integer> widthD;// width distribution
 
     public WidthSearchSampler() {
         widthD = new HashMap<>();
