@@ -18,13 +18,17 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.facebook.common.logging.FLog;
+
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import me.zchang.abitractor.algorithm.ABitractor;
 import me.zchang.abitractor.algorithm.GridExtractorMajority;
 import me.zchang.abitractor.algorithm.WidthSearchSampler;
 import me.zchang.abitractor.ui.Chart;
+import me.zchang.abitractor.ui.CurveChart;
 
 public class MainActivity extends AppCompatActivity implements ABitractor.ABitractorAsyncListener{
     public final static int REQUEST_SELECT_IMAGE = 0x1;
@@ -37,7 +41,9 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
     private TextView sampleText;
     private ProgressBar progressBar;
     private Button extractButton;
-    private Chart chart;
+//    private Chart chart;
+    private CurveChart cvChart;
+    private TextView degreeText;
 
     private String selectImagePath;
     private Bitmap selectImage;
@@ -52,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sampleTime = 16;
+        sampleTime = 8;
         srcImage = (ImageView) findViewById(R.id.iv_src);
         dstImage = (ImageView) findViewById(R.id.iv_des);
         libImage = (ImageView) findViewById(R.id.iv_lib);
@@ -61,7 +67,9 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
         sampleText = (TextView) findViewById(R.id.tv_sample);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         extractButton = (Button) findViewById(R.id.bt_extract);
-        chart = (Chart) findViewById(R.id.ct_statics);
+        cvChart = (CurveChart) findViewById(R.id.cc_curve);
+//        chart = (Chart) findViewById(R.id.ct_statics);
+        degreeText = (TextView) findViewById(R.id.tv_degree);
         sampleBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -98,10 +106,10 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
                     progressBar.setVisibility(View.VISIBLE);
                     aBitractor.generate(MainActivity.this, sampleTime);
                     aBitractor.sample(MainActivity.this);
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inSampleSize = sampleTime;
-                    sampledImage = BitmapFactory.decodeFile(selectImagePath, options);
-                    libImage.setImageBitmap(sampledImage);
+//                    BitmapFactory.Options options = new BitmapFactory.Options();
+//                    options.inSampleSize = sampleTime;
+//                    sampledImage = BitmapFactory.decodeFile(selectImagePath, options);
+//                    libImage.setImageBitmap(sampledImage);
                     extractButton.setClickable(false);
                 }
             }
@@ -148,14 +156,17 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
             aBitractor.setExtractor(new GridExtractorMajority());
             aBitractor.setSampler(new WidthSearchSampler());
             srcImage.setImageURI(Uri.fromFile(new File(selectImagePath)));
+
+            sampleTime = 8;
+            cvChart.clear();
         }
     }
 
 
     @Override
     public void onSampled(int sampleLevel, Map<Integer, Integer> widthD) {
-        if(widthD != null)
-            chart.setData(widthD);
+//        if(widthD != null)
+//            chart.setData(widthD);
     }
 
     @Override
@@ -164,9 +175,16 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
         extractButton.setClickable(true);
         if(bitmap != null) {
             dstImage.setImageBitmap(bitmap);
+            sampleBar.setProgress(sampleTime - 1);
         }
 
         markedImage.setImageBitmap(GridMarkedBmp);
+        degreeText.setText(degree + "");
+
+        cvChart.drawDot(sampleTime, degree);
+        if(sampleTime < 100) {
+            aBitractor.generate(this, ++ sampleTime);
+        }
         //                BitmapFactory.Options options = new BitmapFactory.Options();
 //                options.inSampleSize = sampleTime;
 //                selectImage = BitmapFactory.decodeFile(selectImagePath, options);

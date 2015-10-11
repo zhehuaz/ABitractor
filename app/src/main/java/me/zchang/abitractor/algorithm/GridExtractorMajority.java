@@ -15,6 +15,8 @@ import java.util.Map;
 public class GridExtractorMajority implements ABitractor.Extractor {
     Bitmap gridMarkedBmp;
 
+    float degree;
+
     @Override
     public int[] extractFromBitmap(Bitmap srcBitmap, int sampleLevel) {
         int bitmapHeight = srcBitmap.getHeight();
@@ -29,6 +31,9 @@ public class GridExtractorMajority implements ABitractor.Extractor {
 
         int startX, startY;
         int curColor;
+        int sampleNum = 0;
+        float sampleSize = sampleLevel * sampleLevel;
+        degree = 0;
         gridMarkedBmp = srcBitmap.copy(srcBitmap.getConfig(), true);
 
         // for one row
@@ -41,6 +46,10 @@ public class GridExtractorMajority implements ABitractor.Extractor {
                 startX = sampleLevel * j;
                 startY = sampleLevel * i;
                 gridMarkedBmp.setPixel(startX, startY, 0x0);
+                gridMarkedBmp.setPixel(startX - 1 > 0 ? startX - 1 : 0, startY, 0x0);
+                gridMarkedBmp.setPixel(startX + 1 > bitmapWidth ? bitmapWidth : startX + 1, startY, 0x0);
+                gridMarkedBmp.setPixel(startX, startY - 1 > 0 ? startY - 1: 0, 0x0);
+                gridMarkedBmp.setPixel(startX, startY + 1 > bitmapHeight ? bitmapHeight : startY + 1, 0x0);
 
                 // for one row in a block
                 for (int k = startY; k < startY + sampleLevel && k < bitmapHeight; k++) {
@@ -61,6 +70,8 @@ public class GridExtractorMajority implements ABitractor.Extractor {
                     }
                 });
                 generated[i * tarWidth + j] = temp.get(0).getKey();
+                degree = degree * sampleNum + temp.get(0).getValue() / sampleSize;
+                degree /= ++sampleNum;
             }
         }
         return generated;
@@ -70,4 +81,10 @@ public class GridExtractorMajority implements ABitractor.Extractor {
     public Bitmap getGridMarkedBmp() {
         return gridMarkedBmp;
     }
+
+    @Override
+    public float getDegree() {
+        return degree;
+    }
+
 }

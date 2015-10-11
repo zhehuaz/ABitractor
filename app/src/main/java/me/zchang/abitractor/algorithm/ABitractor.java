@@ -68,7 +68,7 @@ public class ABitractor {
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
-                listener.onGenerated(bitmap, extractor.getGridMarkedBmp(), 0);
+                listener.onGenerated(bitmap, extractor.getGridMarkedBmp(), extractor.getDegree());
             }
         }.execute(bitmap);
     }
@@ -132,6 +132,7 @@ public class ABitractor {
     interface Extractor {
         int[] extractFromBitmap(Bitmap bitmap, int sampleLevel);
         Bitmap getGridMarkedBmp();
+        float getDegree();
     }
 
     interface Sampler {

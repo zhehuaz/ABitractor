@@ -37,10 +37,15 @@
         android:layout_height="wrap_content"
         android:textSize="35sp"
         android:id="@+id/tv_sample"
-        android:text="16"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/iv_des"
-        android:layout_toEndOf="@+id/iv_des" />
+        android:text="8" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_degree"
+        android:layout_gravity="bottom|right"
+        android:text="degree"
+        />
 
     <Button
         android:layout_width="wrap_content"
@@ -71,12 +76,9 @@
         android:visibility="invisible"
         android:layout_gravity="left|bottom" />
 
-    <me.zchang.abitractor.ui.Chart
-        android:layout_width="match_parent"
-        android:layout_height="425dp"
-        android:layout_below="@id/iv_lib"
-        android:id="@+id/ct_statics"
-        android:layout_gravity="center_horizontal|bottom" />
-
-
+    <me.zchang.abitractor.ui.CurveChart
+        android:layout_width="wrap_content"
+        android:layout_height="124dp"
+        android:id="@+id/cc_curve"
+        android:layout_gravity="center_horizontal|bottom"/>
 </FrameLayout>
