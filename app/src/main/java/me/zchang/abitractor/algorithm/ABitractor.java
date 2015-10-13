@@ -32,11 +32,11 @@ public class ABitractor {
     }
 
     /**
-     * Asynchronously generate a sampled picture.
+     * Asynchronously asyncGenerate a sampled picture.
      * @param listener Listener that listens to the generation result.
      * @param sampleLevel Sample level.
      */
-    public void generate(@NonNull final ABitractorAsyncListener listener, final int sampleLevel) {
+    public void asyncGenerate(@NonNull final ABitractorAsyncListener listener, final int sampleLevel) {
         //this.sampleLevel = (int)(Math.pow(2.0, (int)(Math.log(sampleLevel) / Math.log(2.d))));
         if (sampleLevel == 1) {
             listener.onGenerated(bitmap, null, 1.f);
@@ -73,7 +73,11 @@ public class ABitractor {
         }.execute(bitmap);
     }
 
-    public void sample(@NonNull final ABitractorAsyncListener listener) {
+    /**
+     *
+     * @param listener
+     */
+    public void asyncSample(@NonNull final ABitractorAsyncListener listener) {
         new AsyncTask<Bitmap, Integer, Integer>() {
 
             @Override
@@ -101,6 +105,29 @@ public class ABitractor {
         }.execute(bitmap);
     }
 
+    public int sample(Map<Integer, Integer> widthD) {
+        if(sampler == null) {
+            sampler = new Sampler() { // by default
+                @Override
+                public int calSampleLevel(Bitmap bitmap) {
+                    return 1;
+                }
+
+                @Override
+                public Map<Integer, Integer> getWidthD() {
+                    return null;
+                }
+            };
+        }
+        sampler.calSampleLevel(bitmap);
+        //TODO how to output widthD?
+        return 0;
+    }
+
+    public float generate(Bitmap bitmap, Bitmap GridMarkedBmp) {
+        return 0;
+    }
+
     public void setExtractor(Extractor extractor) {
         this.extractor = extractor;
     }
@@ -114,8 +141,8 @@ public class ABitractor {
      */
     public interface ABitractorAsyncListener {
         /**
-         * Callback when recommended sample level is calculated over.
-         * @param sampleLevel The recommended sample level.
+         * Callback when recommended asyncSample level is calculated over.
+         * @param sampleLevel The recommended asyncSample level.
          * @param widthD The width distribution, key as width and value as frequency.
          */
         void onSampled(int sampleLevel, final Map<Integer, Integer> widthD);
@@ -124,7 +151,7 @@ public class ABitractor {
          * Callback when the sampled bitmap is generated.
          * @param bitmap The bitmap generated.
          * @param GridMarkedBmp
-         * @param degree Similar degree. TODO always 0 at present
+         * @param degree Similar degree.
          */
         void onGenerated(Bitmap bitmap, Bitmap GridMarkedBmp, float degree);
     }

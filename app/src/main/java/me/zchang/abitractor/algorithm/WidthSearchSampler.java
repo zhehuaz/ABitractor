@@ -18,6 +18,8 @@ public class WidthSearchSampler implements ABitractor.Sampler {
 
     @Override
     public int calSampleLevel(Bitmap bitmap) {
+        if(bitmap == null)
+            return -1;
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
 

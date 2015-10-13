@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -18,16 +17,12 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.facebook.common.logging.FLog;
-
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import me.zchang.abitractor.algorithm.ABitractor;
 import me.zchang.abitractor.algorithm.GridExtractorMajority;
 import me.zchang.abitractor.algorithm.WidthSearchSampler;
-import me.zchang.abitractor.ui.Chart;
 import me.zchang.abitractor.ui.CurveChart;
 
 public class MainActivity extends AppCompatActivity implements ABitractor.ABitractorAsyncListener{
@@ -104,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
             public void onClick(View v) {
                 if (aBitractor != null) {
                     progressBar.setVisibility(View.VISIBLE);
-                    aBitractor.generate(MainActivity.this, sampleTime);
-                    aBitractor.sample(MainActivity.this);
+                    aBitractor.asyncGenerate(MainActivity.this, sampleTime);
+                    aBitractor.asyncSample(MainActivity.this);
 //                    BitmapFactory.Options options = new BitmapFactory.Options();
 //                    options.inSampleSize = sampleTime;
 //                    sampledImage = BitmapFactory.decodeFile(selectImagePath, options);
@@ -183,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements ABitractor.ABitra
 
         cvChart.drawDot(sampleTime, degree);
         if(sampleTime < 100) {
-            aBitractor.generate(this, ++ sampleTime);
+            aBitractor.asyncGenerate(this, ++sampleTime);
         }
         //                BitmapFactory.Options options = new BitmapFactory.Options();
 //                options.inSampleSize = sampleTime;
